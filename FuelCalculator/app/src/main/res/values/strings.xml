@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">FuelCalculator</string>
-    <string name="proximo">Próximo</string>
-    <string name="appDescription">Seu aplicativo para calcular o custo de combustível da sua viagem.</string>
-    <string name="appTitle">Calculadora de Combustível</string>
-</resources>
