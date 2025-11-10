@@ -52,29 +52,54 @@ class DistanciaActivity : AppCompatActivity() {
         // Definir a ação ao clicar no botão "próximo":
         btnDistanciaProximo.setOnClickListener {
 
-            // Receber e converter dados digitados pelo usuario:
-            val distancia = edtDistancia.text.toString().toDouble()
+            // Receber dados digitados pelo usuario:
+            val distanciaTexto = edtDistancia.text.toString()
 
-            // Atribuir todos valores armazenados anteriormente:
-            val precoLitro = edtPrecoLitro
-            val consumo = edtConsumo
+            // CORREÇÃO: Verificar se o campo está vazio (ANTES de converter para Double)
+            if (distanciaTexto.isEmpty()) {
+                // Mostrar mensagem de erro
+                edtDistancia.error = "Por favor, digite a distância"
+                return@setOnClickListener // Para a execução aqui e não avança
+            }
 
-            // Calcular os litros necessarios:
-            val litrosNecessarios = distancia / consumo
+            // VALIDAÇÃO EXTRA: Verificar se é um número válido
+            try {
+                val edtDistanciaValor = distanciaTexto.toDouble()
 
-            // Calcular o custo total:
-            val custoTotal = litrosNecessarios * precoLitro
+                // VALIDAÇÃO: Verificar se o valor é maior que zero
+                if (edtDistanciaValor <= 0) {
+                    edtDistancia.error = "A distância deve ser maior que zero"
+                    return@setOnClickListener
+                }
 
-            // Intenção de navegar para a proxima tela executando a proxima Activity (intent):
-            val intent = Intent(this, ResultadoActivity::class.java)
+                // Limpar qualquer erro anterior
+                edtDistancia.error = null
 
-            // Passar valores armazenados para a proxima tela (putExtra):
-            intent.putExtra("PREÇO LITRO", precoLitro)
-            intent.putExtra("CONSUMO", consumo)
-            intent.putExtra("DISTANCIA", distancia)
-            intent.putExtra("CUSTO TOTAL", custoTotal)
+                // Atribuir todos valores armazenados anteriormente:
+                val precoLitro = edtPrecoLitro
+                val consumo = edtConsumo
 
-            startActivity(intent)
+                // Calcular os litros necessarios:
+                val litrosNecessarios = edtDistanciaValor / consumo
+
+                // Calcular o custo total:
+                val custoTotal = litrosNecessarios * precoLitro
+
+                // Intenção de navegar para a proxima tela executando a proxima Activity (intent):
+                val intent = Intent(this, ResultadoActivity::class.java)
+
+                // Passar valores armazenados para a proxima tela (putExtra):
+                intent.putExtra("PREÇO LITRO", precoLitro)
+                intent.putExtra("CONSUMO", consumo)
+                intent.putExtra("DISTANCIA", edtDistanciaValor) // CORREÇÃO: usar edtDistanciaValor em vez de distancia
+                intent.putExtra("CUSTO TOTAL", custoTotal)
+
+                startActivity(intent)
+
+            } catch (e: NumberFormatException) {
+                // Se não conseguir converter para número, mostrar erro
+                edtDistancia.error = "Por favor, digite um valor numérico válido"
+            }
         }
     }
 

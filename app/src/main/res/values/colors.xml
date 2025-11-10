@@ -3,4 +3,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background">#000E35</color>
+
+
+    <color name="ic_launcher_background">#000E35</color>
+    <color name="fuel_primary">#000E35</color>
+    <color name="fuel_accent">#FFA726</color>
+    <color name="fuel_white">#FFFFFF</color>
+    <color name="fuel_light_blue">#4A5A9C</color>
+
 </resources>

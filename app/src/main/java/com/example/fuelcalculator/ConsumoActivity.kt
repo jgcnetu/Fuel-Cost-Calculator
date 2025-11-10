@@ -24,12 +24,6 @@ class ConsumoActivity : AppCompatActivity() {
             insets
         }
 
-        // 01 - Encontrar e obter as referências dos view's com FindViewById;
-        // 02 - Receber dados da tela anterior com getExtra;
-        // 03 - Passar dados para a proxima tela com putExtra;
-        // 04 - Avançar para a proxima tela (Distancia);
-        // 05 - Retornar para tela anterior (PreçoLitro).
-
         // Encontrar e obter a referência do botão voltar (findViewById):
         val toolbarConsumo = findViewById<MaterialToolbar>(R.id.toolbar_consumo)
 
@@ -50,17 +44,41 @@ class ConsumoActivity : AppCompatActivity() {
         // Definir a ação ao clicar no botão "próximo":
         btnConsumoProximo.setOnClickListener {
 
-            // Receber e converter dados digitados pelo usuario:
-            val edtConsumoValor = edtConsumo.text.toString().toDouble()
+            // Receber dados digitados pelo usuario (como String):
+            val consumoDigitado = edtConsumo.text.toString()
 
-            // Intenção de navegar para a proxima tela executando a proxima Activity (intent):
-            val intent = Intent(this, DistanciaActivity::class.java)
+            // CORREÇÃO: Verificar se o campo está vazio (ANTES de converter para Double)
+            if (consumoDigitado.isEmpty()) {
+                // Mostrar mensagem de erro
+                edtConsumo.error = "Por favor, digite o consumo"
+                return@setOnClickListener // Para a execução aqui e não avança
+            }
 
-            // Passar valores armazenados para a proxima tela (putExtra):
-            intent.putExtra("PREÇO LITRO", edtPrecoLitro)
-            intent.putExtra("CONSUMO", edtConsumoValor)
+            // VALIDAÇÃO EXTRA: Verificar se é um número válido
+            try {
+                val edtConsumoValor = consumoDigitado.toDouble()
 
-            startActivity(intent)
+                // VALIDAÇÃO: Verificar se o valor é maior que zero
+                if (edtConsumoValor <= 0) {
+                    edtConsumo.error = "O consumo deve ser maior que zero"
+                    return@setOnClickListener
+                }
+
+                // Limpar qualquer erro anterior
+                edtConsumo.error = null
+
+                // Intenção de navegar para a proxima tela executando a proxima Activity (intent):
+                val intent = Intent(this, DistanciaActivity::class.java)
+
+                // Passar valores armazenados para a proxima tela (putExtra):
+                intent.putExtra("PREÇO LITRO", edtPrecoLitro)
+                intent.putExtra("CONSUMO", edtConsumoValor)
+
+                startActivity(intent)
+            } catch (e: NumberFormatException) {
+                // Se não conseguir converter para número, mostrar erro
+                edtConsumo.error = "Por favor, digite um valor numérico válido"
+            }
         }
     }
 

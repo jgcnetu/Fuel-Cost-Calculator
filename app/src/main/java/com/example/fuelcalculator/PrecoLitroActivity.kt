@@ -23,11 +23,6 @@ class PrecoLitroActivity : AppCompatActivity() {
             insets
         }
 
-        // 01 - Encontrar e obter as referências dos view's com FindViewById;
-        // 02 - Passar dados para a proxima tela com putExtra;
-        // 03 - Avançar para a proxima tela (Consumo);
-        // 04 - Retornar para tela inicial (Main).
-
         // Encontrar e obter a referência do botão voltar (findViewById):
         val toolbarPrecoLitro = findViewById<MaterialToolbar>(R.id.toolbarPrecoLitro)
 
@@ -45,16 +40,41 @@ class PrecoLitroActivity : AppCompatActivity() {
         // Definir a ação ao clicar no botão "próximo":
         btnPrecoLitroProximo.setOnClickListener {
 
-            // Receber e converter dados digitados pelo usuario:
-            val edtPrecoLitroValor = edtPrecoLitro.text.toString().toDouble()
+            // Receber dados digitados pelo usuario:
+            val precoDigitado = edtPrecoLitro.text.toString()
 
-            // Intenção de navegar para a proxima tela executando a proxima Activity (intent):
-            val intent = Intent(this, ConsumoActivity::class.java)
+            // VALIDAÇÃO: Verificar se o campo está vazio
+            if (precoDigitado.isEmpty()) {
+                // Mostrar mensagem de erro
+                edtPrecoLitro.error = "Por favor, digite o preço do litro"
+                return@setOnClickListener // Para a execução aqui e não avança
+            }
 
-            // Passar valores armazenados para a proxima tela (putExtra):
-            intent.putExtra("PREÇO LITRO", edtPrecoLitroValor)
+            // VALIDAÇÃO EXTRA: Verificar se é um número válido
+            try {
+                val edtPrecoLitroValor = precoDigitado.toDouble()
 
-            startActivity(intent)
+                // VALIDAÇÃO: Verificar se o valor é maior que zero
+                if (edtPrecoLitroValor <= 0) {
+                    edtPrecoLitro.error = "O preço deve ser maior que zero"
+                    return@setOnClickListener
+                }
+
+                // Limpar qualquer erro anterior
+                edtPrecoLitro.error = null
+
+                // Intenção de navegar para a proxima tela executando a proxima Activity (intent):
+                val intent = Intent(this, ConsumoActivity::class.java)
+
+                // Passar valores armazenados para a proxima tela (putExtra):
+                intent.putExtra("PREÇO LITRO", edtPrecoLitroValor)
+
+                startActivity(intent)
+
+            } catch (e: NumberFormatException) {
+                // Se não conseguir converter para número, mostrar erro
+                edtPrecoLitro.error = "Por favor, digite um valor numérico válido"
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.appbar.MaterialToolbar
+import java.text.DecimalFormat
 
 class ResultadoActivity : AppCompatActivity() {
 
@@ -23,12 +24,6 @@ class ResultadoActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        // 01 - Encontrar e obter as referências dos view's com FindViewById;
-        // 02 - Receber dados da tela anterior com getExtra;
-        // 03 - Mostrar na tela o resumo dos valores que foram armazenados;
-        // 04 - Reiniciar o ciclo para a tela inicial;
-        // 05 - Retornar para tela anterior.
 
         // Encontrar e obter a referência do botão voltar (findViewById):
         val tollbarResultado = findViewById<MaterialToolbar>(R.id.tollbarResultado)
@@ -53,16 +48,20 @@ class ResultadoActivity : AppCompatActivity() {
         // Encontrar e obter a referência do botão "Calcular Novamente" (findViewById):
         val btnResultado = findViewById<Button>(R.id.btnResultado)
 
-        // Mostrar na tela o resumo dos valores que foram armazenados (toString):
-        tvPrecoLitro.text = precoLitro.toString()
-        tvConsumo.text = consumo.toString()
-        tvDistancia.text = distancia.toString()
-        tvResultado.text = custoTotal.toString()
+        // Criar formatador para 2 casas decimais
+        val decimalFormat = DecimalFormat("#,##0.00")
 
-        // Definir a ação ao clicar no botão "próximo":
+        // Mostrar na tela o resumo dos valores que foram armazenados com 2 casas decimais:
+        tvPrecoLitro.text = "R$ ${decimalFormat.format(precoLitro)}"
+        tvConsumo.text = "${decimalFormat.format(consumo)} km/L"
+        tvDistancia.text = "${decimalFormat.format(distancia)} km"
+        tvResultado.text = "R$ ${decimalFormat.format(custoTotal)}"
+
+        // Definir a ação ao clicar no botão "Calcular Novamente":
         btnResultado.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish() // Opcional: fecha esta activity para não acumular na pilha
         }
     }
 
